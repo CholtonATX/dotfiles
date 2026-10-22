@@ -12,9 +12,22 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    # Linux-cached channel for the standalone home-manager output below.
+    nixpkgs-linux.url = "github:NixOS/nixpkgs/nixos-26.05";
   };
 
-  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs }: {
+  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs, nixpkgs-linux }: {
+    # Linux: home-manager switch --flake .#linux
+    homeConfigurations."linux" = home-manager.lib.homeManagerConfiguration {
+      pkgs = import nixpkgs-linux {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+      };
+      modules = [ ./home.nix ];
+    };
+
+
     darwinConfigurations."dotfiles" = nix-darwin.lib.darwinSystem {
       modules = [ 
         ./configuration.nix 

@@ -1,12 +1,13 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
     dotfiles = "${config.home.homeDirectory}/.dotfiles";
+    isDarwin = pkgs.stdenv.isDarwin;
 in
 
 {
     home.username = "christian.holton";
-    home.homeDirectory = "/Users/christian.holton";
+    home.homeDirectory = if isDarwin then "/Users/christian.holton" else "/home/christian.holton";
     home.stateVersion = "24.11";
     home.packages = with pkgs; [
         # nix tooling
@@ -31,6 +32,10 @@ in
         # cli tools managed by nixpkgs
         _1password-cli
         nerd-fonts.hack
+    ] ++ lib.optionals (!isDarwin) [
+        # Homebrew provides these on macOS
+        eza
+        zoxide
     ];
 
     fonts.fontconfig.enable = true;
@@ -38,16 +43,16 @@ in
     home.sessionVariables = {
         EDITOR = "nano";
         LANG = "en_US.UTF-8";
-        HOMEBREW_REQUIRE_TAP_TRUST = "1";
-        PYTORCH_ENABLE_MPS_FALLBACK = "1";
         CLAUDE_CODE_EFFORT_LEVEL = "high";
         CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING = "1";
         CLAUDE_CODE_SUBAGENT_MODEL = "claude-haiku-4-5-20251001";
-        ANTHROPIC_MODEL = "claude-sonnet-4-6";
         CLAUDE_CODE_MAX_OUTPUT_TOKENS = "16384";
         CLAUDE_CODE_NO_FLICKER = "1";
-        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+        # CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
         BASH_MAX_TIMEOUT_MS = "1800000";
+    } // lib.optionalAttrs isDarwin {
+        HOMEBREW_REQUIRE_TAP_TRUST = "1";
+        PYTORCH_ENABLE_MPS_FALLBACK = "1";
     };
 
     programs.zsh = {
@@ -57,12 +62,14 @@ in
         initContent = ''
             bindkey '^f' autosuggest-accept
 
+        '' + lib.optionalString isDarwin ''
             # PATH additions
             export PATH="/opt/homebrew/bin:$PATH"
             export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
             export PATH="$PATH:/Users/christian.holton/ACLI"
             export PATH="$PATH:/Library/Nessus/run/sbin"
 
+        '' + ''
             # pyenv
             export PYENV_ROOT="$HOME/.pyenv"
             [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
@@ -155,7 +162,7 @@ in
             man = "tldr";
             g = "git";
             cc = "cd ~/git && claude";
-            gam = "/Users/christian.holton/bin/gamadv-xtd3/gam";
+            gam = "${config.home.homeDirectory}/bin/gamadv-xtd3/gam";
             condanightly = "cd ~ && conda install pytorch torchvision torchaudio -c pytorch-nightly && python importTorchTest.py";
         };
     };
