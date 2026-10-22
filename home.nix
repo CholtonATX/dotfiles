@@ -169,8 +169,8 @@ in
 
     programs.git = {
       enable = true;
-      userName = "CholtonATX";
-      userEmail = "christian.holton@portx.io";
+      settings.user.name = "CholtonATX";
+      settings.user.email = "christian.holton@portx.io";
     };
 
     programs.starship = {
