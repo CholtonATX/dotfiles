@@ -39,6 +39,7 @@ in
     ];
 
     fonts.fontconfig.enable = true;
+    manual.manpages.enable = false;
 
     home.sessionVariables = {
         EDITOR = "nano";
