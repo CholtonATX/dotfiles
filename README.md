@@ -23,7 +23,7 @@ After that, run `./rebuild.sh`.
 
 ## Linux (Ubuntu)
 
-Works on x86_64 and aarch64; `rebuild.sh` picks `linux-x86_64` or `linux-aarch64` from `uname -m`. Requires the username `christian.holton` (hardcoded).
+Works on x86_64 and aarch64; `rebuild.sh` picks `linux-x86_64` or `linux-aarch64` from `uname -m`. Username and home directory come from `$USER` and `$HOME`.
 
 ```sh
 git clone https://github.com/CholtonATX/dotfiles ~/github/dotfiles

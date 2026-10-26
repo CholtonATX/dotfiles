@@ -6,8 +6,8 @@ let
 in
 
 {
-    home.username = "christian.holton";
-    home.homeDirectory = if isDarwin then "/Users/christian.holton" else "/home/christian.holton";
+    # home.username / home.homeDirectory come from flake.nix: configuration.nix's
+    # user on macOS, $USER / $HOME on Linux.
     home.stateVersion = "24.11";
     home.packages = with pkgs; [
         # nix tooling

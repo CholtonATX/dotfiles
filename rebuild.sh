@@ -7,5 +7,5 @@ export NIX_CONFIG="extra-experimental-features = nix-command flakes"
 if [[ "$(uname)" == "Darwin" ]]; then
   exec sudo env NIX_CONFIG="$NIX_CONFIG" darwin-rebuild switch --flake ~/.dotfiles#dotfiles
 else
-  exec nix run github:nix-community/home-manager/release-26.05 -- switch --flake ~/.dotfiles#linux-"$(uname -m)"
+  exec nix run github:nix-community/home-manager/release-26.05 -- switch --impure --flake ~/.dotfiles#linux-"$(uname -m)"
 fi
