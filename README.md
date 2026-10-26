@@ -4,12 +4,7 @@ Nix config for macOS (nix-darwin + Home Manager + Homebrew) and Linux (standalon
 
 ## Prerequisites
 
-Install Nix with flakes enabled. The [Determinate Systems installer](https://determinate.systems/nix-installer/) enables flakes by default. With the official installer, also run:
-
-```sh
-echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
-sudo systemctl restart nix-daemon   # Linux only
-```
+Install Nix (official or [Determinate Systems](https://determinate.systems/nix-installer/) installer). `rebuild.sh` enables flakes for its own run. To use flakes elsewhere, add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf`.
 
 ## macOS
 
@@ -21,14 +16,14 @@ First run (installs `darwin-rebuild`):
 ```sh
 git clone https://github.com/CholtonATX/dotfiles ~/github/dotfiles
 ln -sfn ~/github/dotfiles ~/.dotfiles
-sudo nix run nix-darwin/nix-darwin-26.05#darwin-rebuild -- switch --flake ~/.dotfiles#dotfiles
+sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin/nix-darwin-26.05#darwin-rebuild -- switch --flake ~/.dotfiles#dotfiles
 ```
 
 After that, run `./rebuild.sh`.
 
 ## Linux (Ubuntu)
 
-Requires an x86_64 machine and the username `christian.holton`; both are hardcoded.
+Works on x86_64 and aarch64; `rebuild.sh` picks `linux-x86_64` or `linux-aarch64` from `uname -m`. Requires the username `christian.holton` (hardcoded).
 
 ```sh
 git clone https://github.com/CholtonATX/dotfiles ~/github/dotfiles
