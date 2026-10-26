@@ -18,7 +18,8 @@
   };
 
   outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs, nixpkgs-linux }: {
-    # Linux: home-manager switch --flake .#linux-$(uname -m)
+    # Linux: home-manager switch --impure --flake .#linux-$(uname -m)
+    # --impure lets the user come from $USER / $HOME instead of being hardcoded.
     homeConfigurations = builtins.listToAttrs (map (arch: {
       name = "linux-${arch}";
       value = home-manager.lib.homeManagerConfiguration {
@@ -26,7 +27,17 @@
           system = "${arch}-linux";
           config.allowUnfree = true;
         };
-        modules = [ ./home.nix ];
+        modules = [
+          ./home.nix
+          (let
+            env = name:
+              let value = builtins.getEnv name;
+              in if value != "" then value else throw "${name} is empty; run with --impure (see rebuild.sh)";
+          in {
+            home.username = env "USER";
+            home.homeDirectory = env "HOME";
+          })
+        ];
       };
     }) [ "x86_64" "aarch64" ]);
 
