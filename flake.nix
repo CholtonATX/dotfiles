@@ -18,14 +18,17 @@
   };
 
   outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs, nixpkgs-linux }: {
-    # Linux: home-manager switch --flake .#linux
-    homeConfigurations."linux" = home-manager.lib.homeManagerConfiguration {
-      pkgs = import nixpkgs-linux {
-        system = "x86_64-linux";
-        config.allowUnfree = true;
+    # Linux: home-manager switch --flake .#linux-$(uname -m)
+    homeConfigurations = builtins.listToAttrs (map (arch: {
+      name = "linux-${arch}";
+      value = home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs-linux {
+          system = "${arch}-linux";
+          config.allowUnfree = true;
+        };
+        modules = [ ./home.nix ];
       };
-      modules = [ ./home.nix ];
-    };
+    }) [ "x86_64" "aarch64" ]);
 
 
     darwinConfigurations."dotfiles" = nix-darwin.lib.darwinSystem {

@@ -83,7 +83,6 @@ in
             fpath+=${pkgs.nix}/share/zsh/site-functions
             autoload -Uz compinit && compinit
             eval "$(op completion zsh)"; compdef _op op
-            eval $(thefuck --alias)
 
             # FZF keybindings and completion
             [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
