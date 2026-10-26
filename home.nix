@@ -28,6 +28,7 @@ in
         pyenv
         wget
         tldr
+        nodejs   # provides node, npm, npx
 
         # cli tools managed by nixpkgs
         _1password-cli
