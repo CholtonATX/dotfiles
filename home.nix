@@ -65,16 +65,20 @@ in
             bindkey '^f' autosuggest-accept
 
         '' + lib.optionalString isDarwin ''
-            # PATH additions
-            export PATH="/opt/homebrew/bin:$PATH"
-            export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-            export PATH="$PATH:/Users/christian.holton/ACLI"
-            export PATH="$PATH:/Library/Nessus/run/sbin"
+            # PATH additions. Assign the `path` array, not the PATH scalar:
+            # home-manager's `typeset -U path` only dedupes array assignments.
+            path=(
+                /opt/homebrew/opt/ruby/bin
+                /opt/homebrew/bin
+                $path
+                /Users/christian.holton/ACLI
+                /Library/Nessus/run/sbin
+            )
 
         '' + ''
             # pyenv
             export PYENV_ROOT="$HOME/.pyenv"
-            [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+            [[ -d $PYENV_ROOT/bin ]] && path=($PYENV_ROOT/bin $path)
             eval "$(pyenv init -)"
 
             # Tool initializations
