@@ -47,6 +47,7 @@
          "pyenv"
          "starship"
          "tldr"
+         "uv"
          "zoxide"
       ];
       casks = [
